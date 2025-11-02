@@ -1,0 +1,56 @@
+# ===============================
+# Python / Streamlit Project
+# ===============================
+
+# Entorno virtual
+.venv/
+venv/
+ENV/
+env/
+
+# Archivos de entorno / claves
+.env
+
+# Cache y archivos temporales
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archivos de logs
+*.log
+
+# Archivos de configuración locales
+*.local
+*.config
+
+# Carpetas de Streamlit
+.streamlit/secrets.toml
+.streamlit/config.toml
+
+# Archivos de análisis o datos temporales
+*.csv
+*.sqlite3
+*.db
+*.tmp
+*.bak
+
+# Archivos de sistema / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Dependencias compiladas
+*.so
+*.pyd
+*.dll
+
+# Salidas de pruebas
+coverage/
+htmlcov/
+.tox/
+.pytest_cache/
+
+# Archivos generados por Streamlit
+streamlit_app.db

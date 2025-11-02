@@ -93,111 +93,111 @@ if menu == "Aplicación principal":
     if st.session_state.archivo is not None:
         st.image(st.session_state.archivo, caption="Imagen cargada", width="stretch")
 
-    st.subheader("Texto extraído del OCR:")
-    st.code(st.session_state.texto_extraido or "No se detectó texto.", language="text")
+        # ============================================================
+        #               SECCIÓN LLM (GROQ / HUGGING FACE)
+        # ============================================================
 
-    # ============================================================
-    #               SECCIÓN LLM (GROQ / HUGGING FACE)
-    # ============================================================
-
-    st.header("Sección: LLM (GROQ / Hugging Face)")
-    st.session_state.proveedor = st.radio(
-        "Seleccione el proveedor de API:",
-        ["GROQ", "Hugging Face"],
-        index=["GROQ", "Hugging Face"].index(st.session_state.proveedor),
-    )
-
-    st.session_state.tarea = st.selectbox(
-        "Seleccione la tarea a realizar",
-        [
-            "Resumir en 3 puntos clave",
-            "Identificar las entidades principales",
-            "Traducir al inglés",
-        ],
-        index=[
-            "Resumir en 3 puntos clave",
-            "Identificar las entidades principales",
-            "Traducir al inglés",
-        ].index(st.session_state.tarea),
-    )
-
-    st.session_state.temperatura = st.slider(
-        "Creatividad (temperature)", 0.0, 1.0, st.session_state.temperatura, 0.1
-    )
-
-    st.session_state.max_tokens = st.slider(
-        "Máx. tokens (longitud de respuesta)", 50, 2000, st.session_state.max_tokens, 50
-    )
-
-    if st.session_state.proveedor == "GROQ":
-        modelos_groq = [
-            "llama-3.1-8b-instant",
-            "openai/gpt-oss-20b",
-            "openai/gpt-oss-120b",
-            "meta-llama/llama-4-scout-17b-16e-instruct",
-        ]
-        st.session_state.modelo = st.selectbox(
-            "Seleccione el modelo de GROQ",
-            modelos_groq,
-            index=(
-                modelos_groq.index(st.session_state.modelo)
-                if st.session_state.modelo in modelos_groq
-                else 0
-            ),
-        )
-    else:
-        modelos_hf = [
-            "meta-llama/Meta-Llama-3-8B-Instruct",
-            "meta-llama/Llama-3.1-8B-Instruct",
-            "Qwen/Qwen2.5-7B-Instruct",
-        ]
-        st.session_state.modelo = st.selectbox(
-            "Seleccione el modelo de Hugging Face",
-            modelos_hf,
-            index=(
-                modelos_hf.index(st.session_state.modelo)
-                if st.session_state.modelo in modelos_hf
-                else 0
-            ),
+        st.header("Sección: LLM (GROQ / Hugging Face)")
+        st.session_state.proveedor = st.radio(
+            "Seleccione el proveedor de API:",
+            ["GROQ", "Hugging Face"],
+            index=["GROQ", "Hugging Face"].index(st.session_state.proveedor),
         )
 
-    if st.button("Analizar Texto"):
-        texto = st.session_state.texto_extraido.strip()
-        if not texto:
-            st.warning("Primero suba una imagen y realice la lectura OCR.")
+        st.session_state.tarea = st.selectbox(
+            "Seleccione la tarea a realizar",
+            [
+                "Resumir en 3 puntos clave",
+                "Identificar las entidades principales",
+                "Traducir al inglés",
+            ],
+            index=[
+                "Resumir en 3 puntos clave",
+                "Identificar las entidades principales",
+                "Traducir al inglés",
+            ].index(st.session_state.tarea),
+        )
+
+        st.session_state.temperatura = st.slider(
+            "Creatividad (temperature)", 0.0, 1.0, st.session_state.temperatura, 0.1
+        )
+
+        st.session_state.max_tokens = st.slider(
+            "Máx. tokens (longitud de respuesta)",
+            50,
+            2000,
+            st.session_state.max_tokens,
+            50,
+        )
+
+        if st.session_state.proveedor == "GROQ":
+            modelos_groq = [
+                "llama-3.1-8b-instant",
+                "openai/gpt-oss-20b",
+                "openai/gpt-oss-120b",
+                "meta-llama/llama-4-scout-17b-16e-instruct",
+            ]
+            st.session_state.modelo = st.selectbox(
+                "Seleccione el modelo de GROQ",
+                modelos_groq,
+                index=(
+                    modelos_groq.index(st.session_state.modelo)
+                    if st.session_state.modelo in modelos_groq
+                    else 0
+                ),
+            )
         else:
-            st.subheader("Resultado del análisis:")
-            if st.session_state.proveedor == "GROQ":
-                with st.spinner("Analizando con GROQ..."):
-                    instrucciones = {
-                        "Resumir en 3 puntos clave": "Resume el siguiente texto en 3 puntos clave claros y concisos:",
-                        "Identificar las entidades principales": "Identifica las entidades principales (personas, lugares, organizaciones, fechas):",
-                        "Traducir al inglés": "Traduce el siguiente texto al inglés de manera natural y precisa:",
-                    }
-                    instruccion = instrucciones.get(
-                        st.session_state.tarea, "Analiza el siguiente texto:"
-                    )
-                    respuesta = analizar_con_groq(
-                        groq_key,
-                        st.session_state.modelo,
-                        instruccion,
-                        texto,
-                        st.session_state.temperatura,
-                        st.session_state.max_tokens,
-                    )
+            modelos_hf = [
+                "meta-llama/Meta-Llama-3-8B-Instruct",
+                "meta-llama/Llama-3.1-8B-Instruct",
+                "Qwen/Qwen2.5-7B-Instruct",
+            ]
+            st.session_state.modelo = st.selectbox(
+                "Seleccione el modelo de Hugging Face",
+                modelos_hf,
+                index=(
+                    modelos_hf.index(st.session_state.modelo)
+                    if st.session_state.modelo in modelos_hf
+                    else 0
+                ),
+            )
+
+        if st.button("Analizar Texto"):
+            texto = st.session_state.texto_extraido.strip()
+            if not texto:
+                st.warning("Primero suba una imagen y realice la lectura OCR.")
             else:
-                with st.spinner("Analizando con Hugging Face..."):
-                    respuesta = analizar_con_huggingface(
-                        hf_key,
-                        st.session_state.modelo,
-                        st.session_state.tarea,
-                        texto,
-                        st.session_state.temperatura,
-                        st.session_state.max_tokens,
-                    )
+                st.subheader("Resultado del análisis:")
+                if st.session_state.proveedor == "GROQ":
+                    with st.spinner("Analizando con GROQ..."):
+                        instrucciones = {
+                            "Resumir en 3 puntos clave": "Resume el siguiente texto en 3 puntos clave claros y concisos:",
+                            "Identificar las entidades principales": "Identifica las entidades principales (personas, lugares, organizaciones, fechas):",
+                            "Traducir al inglés": "Traduce el siguiente texto al inglés de manera natural y precisa:",
+                        }
+                        instruccion = instrucciones.get(
+                            st.session_state.tarea, "Analiza el siguiente texto:"
+                        )
+                        respuesta = analizar_con_groq(
+                            groq_key,
+                            st.session_state.modelo,
+                            instruccion,
+                            texto,
+                            st.session_state.temperatura,
+                            st.session_state.max_tokens,
+                        )
+                else:
+                    with st.spinner("Analizando con Hugging Face..."):
+                        respuesta = analizar_con_huggingface(
+                            hf_key,
+                            st.session_state.modelo,
+                            st.session_state.tarea,
+                            texto,
+                            st.session_state.temperatura,
+                            st.session_state.max_tokens,
+                        )
 
-            st.markdown(respuesta or "No se generó ninguna respuesta.")
-
+                st.markdown(respuesta or "No se generó ninguna respuesta.")
 
 # ============================================================
 #                 SECCIÓN DE REFLEXIÓN
